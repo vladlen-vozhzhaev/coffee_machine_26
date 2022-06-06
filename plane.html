@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Document</title>
+        <style>
+            body{
+                background: url("https://www.pixelstalk.net/wp-content/uploads/2016/09/Black-2D-City-Cilhouette-Background.jpg");
+                background-size: cover;
+            }
+            img{
+                width: 200px;
+                position: absolute;
+                transform: scale(-1,1);
+                top: 50px;
+            }
+        </style>
+    </head>
+    <body>
+        <img src="/img/plane.png" id="plane" alt="">
+        <script>
+            let plane = document.getElementById('plane');
+            let left = 0;
+            let moveToRight = true;
+            setInterval(moveBlock, 5);
+            function moveBlock(){
+                if(moveToRight){
+                    left++;
+                    plane.style.left = left+"px";
+                    plane.style.transform = "scale(-1,1)";
+                }else{
+                    left--;
+                    plane.style.left = left+"px";
+                    plane.style.transform = "scale(1,1)";
+                }
+                if(window.innerWidth-200 < left) moveToRight = false;
+                else if(left === 0) moveToRight = true;
+            }
+        </script>
+    </body>
+</html>
