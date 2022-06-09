@@ -6,8 +6,90 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <style>
+        #red_box, #blue_box, #lime_box, #yellow_box{
+            width: 150px;
+            height: 150px;
+            position: absolute;
+        }
+        #red_box{
+            background: red;
+            top: 0;
+            left: 0;
+        }
+        #blue_box{
+            background: blue;
+            top: 0;
+            right: 0;
+        }
+        #yellow_box{
+            background: yellow;
+            left: 0;
+            bottom: 0;
+        }
+        #lime_box{
+            background: lime;
+            right: 0;
+            bottom: 0;
+        }
+        .circle{
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            border: 1px solid black;
+            border-radius: 45px;
+            left: 300px;
+            top: 300px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
+    <div id="red_box" data-color="red"></div>
+    <div id="blue_box" data-color="blue"></div>
+    <div id="yellow_box" data-color="yellow"></div>
+    <div id="lime_box" data-color="lime"></div>
 
+    <script>
+        let colors = ["red", "blue", "yellow", "lime"];
+        let random = getIntRandom(3, 8);
+        for (let i = 0; i < random; i++) {
+            let div = document.createElement('div');
+            div.classList.add('circle');
+            const color = colors[getIntRandom(0,colors.length)];
+            div.style.background = color;
+            div.dataset.color = color;
+            div.style.left = getIntRandom(150, window.innerWidth-240)+"px";
+            div.style.top = getIntRandom(150, window.innerHeight-240)+"px";
+            document.body.append(div);
+        }
+
+        let circles = document.querySelectorAll(".circle");
+        for (let i = 0; i < circles.length; i++) {
+            let circle = circles[i];
+            circle.onmousedown = function (){
+                window.onmousemove = function (e){
+                    circle.style.left = e.clientX-45+"px";
+                    circle.style.top = e.clientY-45+"px";
+                }
+                circle.onmouseup = function (event){
+                    window.onmousemove = null;
+                    circle.hidden = true;
+                    let elemBelow = document.elementFromPoint(event.clientX, event.clientY);
+                    if(circle.dataset.color === elemBelow.dataset.color){
+                        alert("Правильно!")
+                    }else if (elemBelow.dataset.color != undefined){
+                        alert("Цвет не совпал")
+                    }else{
+                        circle.hidden = false;
+                    }
+                }
+            }
+        }
+
+        function getIntRandom(min, max){
+            return Math.floor(Math.random()*(max-min)+min)
+        }
+    </script>
 </body>
 </html>

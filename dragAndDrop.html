@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Document</title>
+        <style>
+            #block{
+                width: 100px;
+                position: absolute;
+                top: 0;
+                left: 0;
+            }
+        </style>
+    </head>
+    <body>
+    <img id="block" src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/274px-PNG_transparency_demonstration_1.png" alt="" >
+
+        <script>
+            let block = document.getElementById('block');
+            block.onmousedown = function (event){
+                block.ondragstart = function (){return false;}
+                window.onmousemove = function (e){
+                    block.style.top = e.clientY-50+"px";
+                    block.style.left = e.clientX-50+"px";
+                    console.log(e.clientX, e.clientY)
+                }
+                block.onmouseup = function (){
+                    window.onmousemove = null;
+                }
+            }
+        </script>
+    </body>
+</html>
