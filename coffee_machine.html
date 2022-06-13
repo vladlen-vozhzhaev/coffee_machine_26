@@ -54,7 +54,17 @@
             img[src$="rub.jpg"]:hover{
                 filter: contrast(1.5);
             }
-
+            #changeBox{
+                width: 100%;
+                height: 150px;
+                background: antiquewhite;
+                border: 2px solid blanchedalmond;
+                position: relative;
+            }
+            img[src$="rub.png"]:hover{
+                filter: contrast(1.5);
+                cursor: pointer;
+            }
         </style>
     </head>
     <body>
@@ -84,27 +94,61 @@
                 </div>
                 <div class="col-sm-7">
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-6 text-center">
                             <div id="display" class="py-3 text-center"></div>
+                            <button class="btn btn-lg btn-warning" onclick="getChange(money.value)">Получить сдачу</button>
                         </div>
                         <div class="col-6">
                             <input type="number" id="money">
-                            <img src="/img/bill_acc.png" alt="">
+                            <img src="/img/bill_acc.png" id="billAcc" alt="">
+                            <div id="changeBox" class="mt-3"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="container">
-            <img src="/img/50rub.jpg" alt="">
-            <img src="/img/100rub.jpg" alt="">
-            <img src="/img/500rub.jpg" alt="">
+            <img src="/img/50rub.jpg" data-value="50" alt="">
+            <img src="/img/100rub.jpg" data-value="100" alt="">
+            <img src="/img/500rub.jpg" data-value="500" alt="">
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
         <script>
+            let billAcc = document.getElementById('billAcc');
             let bills = document.querySelectorAll('img[src$="rub.jpg"]');
             let money = document.getElementById("money");
             let display = document.getElementById("display");
+            let changeBox = document.getElementById('changeBox');
+            const intRandom = (min, max)=>Math.floor(Math.random()*(max-min)+min);
+            for (let i = 0; i < bills.length; i++) {
+                let bill = bills[i];
+                bill.ondragstart = ()=>false; // стрелочная функция
+                bill.onmousedown = function (event){
+                    bill.style.transform = "rotate(90deg)";
+                    bill.style.position = "absolute";
+                    bill.style.top = event.clientY-bill.offsetHeight/2+"px";
+                    bill.style.left = event.clientX-bill.offsetWidth/2+"px";
+                    window.onmousemove = function (e){
+                        bill.style.top = e.clientY-bill.offsetHeight/2+"px";
+                        bill.style.left = e.clientX-bill.offsetWidth/2+"px";
+                    }
+                    window.onmouseup = function (){
+                        window.onmousemove = ()=>false;
+                        let billAccTop = billAcc.getBoundingClientRect().top;
+                        let billTop = bill.getBoundingClientRect().top;
+                        let billAccRight = billAcc.getBoundingClientRect().right;
+                        let billRight = bill.getBoundingClientRect().right;
+                        let billAccLeft = billAcc.getBoundingClientRect().left;
+                        let billLeft = bill.getBoundingClientRect().left;
+                        let billAccBottom = billAcc.getBoundingClientRect().bottom-(2/3)*(billAcc.getBoundingClientRect().height);
+                        if(billAccTop < billTop && billAccRight>billRight && billAccLeft<billLeft && billAccBottom>billTop){
+                            bill.hidden = true;
+                            money.value = +money.value + (+bill.dataset.value);
+                        }
+                    }
+                }
+            }
+
             function getCoffee(coffeeName, price){
                 if(money.value >= price){
                     money.value = money.value - price;
@@ -122,8 +166,34 @@
                 else if(num>=1) coin = 1;
                 // let coin = num>=10?10:num>=5?5:num>=2?2:num>=1?1:0;
                 if(coin){
-                    console.log(coin);
+                    let top = intRandom(0, 100) + "px";
+                    let left = intRandom(0, changeBox.offsetWidth-50) + "px";
+                    let img = document.createElement('img');
+                    img.src = `/img/${coin}rub.png`;
+                    img.style.position = "absolute";
+                    img.style.width = "50px";
+                    img.style.top = top;
+                    img.style.left = left;
+                    img.onclick = ()=>img.hidden = true;
+                    changeBox.append(img);
+                    //EVIL!!! changeBox.innerHTML += `<img src="/img/${coin}rub.png" width="50px" style="position: absolute; top: ${top}; left: ${left}">`;
                     getChange(num-coin);
+                }
+            }
+
+            function getChangeLoop(num){
+                while(num>0){
+                    let coin = num>=10?10:num>=5?5:num>=2?2:num>=1?1:0;
+                    let top = intRandom(0, 100) + "px";
+                    let left = intRandom(0, changeBox.offsetWidth-50) + "px";
+                    let img = document.createElement('img');
+                    img.src = `/img/${coin}rub.png`;
+                    img.style.position = "absolute";
+                    img.style.width = "50px";
+                    img.style.top = top;
+                    img.style.left = left;
+                    changeBox.append(img);
+                    num -= coin;
                 }
             }
         </script>
